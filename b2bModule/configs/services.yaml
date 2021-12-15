@@ -1,0 +1,120 @@
+services:
+  b2b.components.autoSendingConsumer:
+    class: b2b\components\consumer\AutoSendingConsumer
+    arguments:
+      - '@b2b.components.autoSending.sender'
+      - '@b2b.components.autoSending.state'
+      - '@b2b.components.autoSending.senderValidator'
+      - '@b2b.components.autoSending'
+      - '@b2b.components.chatTemplate'
+      - '@b2b.models.letterTemplate'
+      - '@b2b.components.manager'
+      - '@b2b.components.profile'
+  b2b.components.autoSending:
+    class: b2b\components\AutoSending
+    arguments:
+      - '@b2b.components.autoSending.sendStrategyFactory'
+      - '@b2b.components.autoSending.sending'
+      - '@b2b.components.autoSending.sender'
+      - '@b2b.components.autoSending.outcomeSendingState'
+      - '@b2b.components.autoSending.debug'
+      - '@com.deferredTask'
+      - '@eUser'
+      - '@UserStatus'
+      - '@b2b.cache'
+      - '@commonConfig'
+      - '@logger'
+  b2b.components.autoSending.sendStrategyFactory:
+    class: b2b\components\autoSending\SendStrategyFactory
+    arguments:
+      - '@b2b.components.autoSending.incomeSendingState'
+      - '@b2b.components.autoSending.debug'
+      - '@b2b.components.templateMedia'
+      - '@b2b.components.sentTemplate'
+      - '@UserStatus'
+      - '@com.internalMail'
+      - '@=service("mobApp.yii").get("Letter")'
+  b2b.components.autoSending.state:
+    class: b2b\components\autoSending\State
+    arguments:
+      - '@b2b.cache'
+  b2b.components.autoSending.sending:
+    class: b2b\components\autoSending\Sending
+    arguments:
+      - '@b2b.components.autoSending.sendingPoolManager'
+      - '@b2b.components.autoSending.chatTemplate'
+      - '@b2b.components.autoSending.letterTemplate'
+      - '@b2b.components.autoSending.outcomeSendingState'
+      - '@b2b.components.autoSending.incomeSendingState'
+      - '@b2b.components.autoSending.debug'
+      - '@UserStatus'
+      - '@permissions'
+      - '@b2b.components.communicationCtr'
+      - '@searchActionsAggregator'
+  b2b.components.autoSending.sendingPoolManager:
+    class: b2b\components\autoSending\SendingPoolManager
+    arguments:
+      - '@b2b.components.autoSending.recipient'
+      - '@b2b.components.autoSending.debug'
+  b2b.components.autoSending.sender:
+    class: b2b\components\autoSending\Sender
+    arguments:
+      - '@b2b.sortedSet'
+  b2b.components.autoSending.senderValidator:
+    class: b2b\components\autoSending\SenderValidator
+    arguments:
+      - '@b2b.components.chatTemplate'
+      - '@b2b.components.letterTemplate'
+  b2b.components.autoSending.recipient:
+    class: b2b\components\autoSending\Recipient
+    arguments:
+      - '@eUser'
+      - '@commonConfig'
+  b2b.components.autoSending.outcomeSendingState:
+    class: b2b\components\autoSending\OutcomeSendingState
+    arguments:
+      - '@b2b.cache'
+  b2b.components.autoSending.incomeSendingState:
+    class: b2b\components\autoSending\IncomeSendingState
+    arguments:
+      - '@b2b.components.lastCommunication'
+  b2b.components.autoSending.chatTemplate:
+    class: b2b\components\autoSending\ChatTemplate
+    arguments:
+      - '@b2b.components.chatTemplate'
+      - '@b2b.components.sentTemplate'
+  b2b.components.autoSending.letterTemplate:
+    class: b2b\components\autoSending\LetterTemplate
+    arguments:
+      - '@b2b.components.letterTemplate'
+      - '@b2b.components.lastCommunication'
+  b2b.components.autoSending.debug:
+    class: b2b\components\autoSending\Debug
+    arguments:
+      - '@b2b.components.autoSending.debugState'
+      - '@b2b.list'
+  b2b.components.autoSending.debugState:
+    class: b2b\components\autoSending\DebugState
+    arguments:
+      - '@b2b.cache'
+  b2b.components.chatTemplate:
+    class: b2b\components\ChatTemplate
+    arguments:
+      - '@b2b.models.chatTemplate'
+  b2b.models.letterTemplate:
+    class: b2b\models\letterTemplate\LetterTemplateRepository
+    arguments:
+      - '@=service("dbFactory").getDb("b2bPartnersInteraction")'
+  b2b.components.manager:
+    class: b2b\components\Manager
+    arguments:
+      - '@b2b.models.manager'
+      - '@b2b.components.profile'
+      - '@logger'
+      - '@b2bPartnersInteraction.cache'
+  b2b.components.profile:
+    class: b2b\components\Profile
+    arguments:
+      - '@b2b.models.profile'
+      - '@logger'
+      - '@b2bPartnersInteraction.cache'
